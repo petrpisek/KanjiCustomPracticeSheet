@@ -1,0 +1,234 @@
+<html>
+<head>
+
+
+    <style>
+        .velky_znak {
+            width: 300px;
+            height: 300px;
+            background: white;
+            position: relative;
+        }
+
+            .velky_znak svg {
+                width: 100%;
+                height: 100%;
+                outline: 2px solid black;
+            }
+
+                .velky_znak svg text {
+                    fill: black !important;
+                }
+
+                .velky_znak svg g:first-child {
+                    stroke-width: 1 !important;
+                    stroke: gray !important;
+                }
+
+        .stredni_znak svg text {
+            display: none;
+        }
+
+        .stredni_znak svg g {
+            stroke-width: 1 !important;
+        }
+
+        .stredni_znak svg {
+            stroke-dasharray: 1 4;
+            width: 100%;
+            height: 100%;
+        }
+
+        .stredni_znak {
+            width: 140px;
+            height: 140px;
+            background: white;
+            outline: 2px solid black;
+            position: relative;
+        }
+
+        .maly_znak svg text {
+            display: none;
+        }
+
+        .maly_znak {
+            width: 60px;
+            height: 60px;
+            background: white;
+            outline: 2px solid black;
+            position: relative;
+        }
+
+            .maly_znak svg {
+                stroke-dasharray: 1 10;
+                width: 100%;
+                height: 100%;
+            }
+
+        .margin {
+            margin: 10px
+        }
+
+        .flexc {
+            display: flex;
+            flex-direction: column
+        }
+
+        .flexr {
+            display: flex;
+            flex-direction: row
+        }
+
+        .mrizkah {
+            position: absolute;
+            width: 100%;
+            border-bottom: 1px solid #CCCCCC;
+            top: 50%;
+            line-height: 0;
+            font-size: 0;
+        }
+
+        .mrizkav {
+            position: absolute;
+            height: 100%;
+            border-left: 1px  solid #CCCCCC;
+            left: 50%;
+            line-height: 0;
+            font-size: 0;
+            top: 0;
+        }
+
+        .kanji{}
+    </style>
+</head>
+<body style="background-color: #CCCCCC;">
+
+    <div class="margin flexr">
+        <input onchange="reload(this.value)" onkeyup="reload(this.value)"/>
+    </div>
+    <div class="flexr">
+
+        <div class="flexr" id="sloupce">
+
+            
+        </div>
+
+        <div class="flexr">
+            <div>
+                <div class="velky_znak margin kanji">
+                    <span></span>
+                    <div class="mrizkah">
+                    </div>
+                    <div class="mrizkav">
+                    </div>
+
+                </div>
+
+
+                <div class="flexr" id="stredni_znaky">
+
+                    
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js" integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+
+        const znak = "木";
+
+        function kresli_maly_znak() {
+            const sloupec = $('<div class="margin flexc"></div>');
+
+            const maly_znak = $('\
+                <div class= "maly_znak"> \
+                <span></span> \
+                <div class="mrizkah"> \
+                    </div >\
+                <div class="mrizkav">\
+                </div>\
+                </div >');
+
+            for (var j = 0; j < 15; j++) {
+            
+                var cell = maly_znak.clone();
+                if (j < 2) {
+                    cell.addClass("kanji");
+                }
+                sloupec.append(cell);
+            }
+
+            for (var i = 0; i < 5; i++) {
+                $("#sloupce").append(sloupec.clone());
+            }
+        }
+
+        function kresli_stredni_znaky() {
+            const sloupec = $('<div class="margin flexc"></div>');
+
+            const maly_znak = $('\
+                <div class= "stredni_znak"> \
+                <span></span> \
+                <div class="mrizkah"> \
+                    </div >\
+                <div class="mrizkav">\
+                </div>\
+                </div >');
+
+            for (var j = 0; j < 4; j++) {               
+                sloupec.append(maly_znak.clone());
+            }
+
+            for (var i = 0; i < 2; i++) {
+                var s = sloupec.clone();
+                if (i == 1) {
+                    $(s).children().first().addClass("kanji");
+                }
+                $("#stredni_znaky").append(s);
+            }
+        }
+
+        function loadSVG(ch) {
+            var code = ('000000' + ch.charCodeAt(0).toString(16)).slice(-5);
+
+            console.log(`${ch} code = ${code}`);
+
+            var filename = `https://raw.githubusercontent.com/KanjiVG/kanjivg/master/kanji/${code}.svg`;
+
+            $.get(filename).then(data => {
+                var svg = new XMLSerializer().serializeToString(data.documentElement);
+                if ($(".kanji").each((y, x) => {
+                    if ($(x).children().length > 0) {
+                        $(x).children()[0].remove();
+                    }
+                }));
+
+                $(".kanji").prepend(svg);
+            })
+        }
+
+        function reload(ch) {
+            loadSVG(ch[0]);
+        }
+
+
+        function main() {
+            console.log("OK");
+
+            loadSVG(znak);
+
+
+            kresli_stredni_znaky();
+            kresli_maly_znak();
+            
+        }
+     
+        $(document).ready(main);
+
+    </script>
+
+</body>
+</html>
