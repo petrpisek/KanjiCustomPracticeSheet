@@ -33,11 +33,15 @@
             stroke-width: 1 !important;
         }
 
-        .stredni_znak svg {
-            stroke-dasharray: 1 4;
+        .stredni_znak svg {            
             width: 100%;
             height: 100%;
         }
+
+            .stredni_znak svg g {
+                stroke-width: 1 !important;
+                stroke: gray !important;
+            }
 
         .stredni_znak {
             width: 140px;
@@ -52,17 +56,21 @@
         }
 
         .maly_znak {
-            width: 60px;
-            height: 60px;
+            width: 40px;
+            height: 40px;
             background: white;
             outline: 2px solid black;
             position: relative;
         }
 
-            .maly_znak svg {
-                stroke-dasharray: 1 10;
+            .maly_znak svg {                
                 width: 100%;
                 height: 100%;
+            }
+
+            .maly_znak svg g {
+                stroke-width: 1 !important;
+                stroke: gray !important;                
             }
 
         .margin {
@@ -98,7 +106,10 @@
             top: 0;
         }
 
-        .kanji{}
+        .kanji svg {
+            z-index: 100;
+            position: relative;
+        }
     </style>
 </head>
 <body style="background-color: #CCCCCC;">
@@ -152,17 +163,21 @@
                 </div>\
                 </div >');
 
-            for (var j = 0; j < 15; j++) {
+            for (var j = 0; j < 22; j++) {
             
                 var cell = maly_znak.clone();
-                if (j < 2) {
-                    cell.addClass("kanji");
-                }
+                
                 sloupec.append(cell);
             }
 
             for (var i = 0; i < 5; i++) {
-                $("#sloupce").append(sloupec.clone());
+                var s = sloupec.clone();
+                if (i == 4) {
+                    for (var j = 0; j < 5; j++) {
+                        $(s.children()[j]).addClass("kanji");
+                    }
+                }
+                $("#sloupce").append(s);
             }
         }
 
